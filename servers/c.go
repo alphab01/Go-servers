@@ -11,21 +11,25 @@ import (
   "strconv"
 )
 
-var c := 0
+var c int = 0
 
-func h(w ResponseWriter, r *http.Request) {
+func h(w http.ResponseWriter, r *http.Request) {
   if (r.Method == "GET") {
-    w.Write([]byte(string(c)))
+    w.Write([]byte(strconv.Itoa(c)))
   } else if (r.Method == "POST") {
-    if (isOnlyDigits(r.URL.GET("count"))) {
-      c += strconv.Atoi(r.URL.GET("count"))
+    r.ParseForm()
+    s1 := r.Form.Get("count")
+    c1, err := strconv.Atoi(s1)
+    if (err == nil) {
+      c += c1
     } else {
-      w.Write([]byte("это не число"))
       w.WriteHeader(400)
+      w.Write([]byte("это не число"))
     }
   }
 }
 
 func main() {
-
+  http.HandleFunc("/count", h)
+  _ = http.ListenAndServe(":3333", nil)
 }
