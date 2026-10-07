@@ -10,5 +10,5 @@ func main() {
   r, _ := http.Get("http://localhost:8080")
   defer r.Body.Close()
   d, _ := io.ReadAll(r.Body)
-  fmt.Println("%s", d)
+  fmt.Printf("%s\n", d)
 }
